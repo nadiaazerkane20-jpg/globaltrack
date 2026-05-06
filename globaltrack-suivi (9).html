@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Globai Track — Suivi de commande</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;
+  --ink:#0a0a0a;
+  --ink-2:#404040;
+  --ink-3:#737373;
+  --ink-4:#a3a3a3;
+  --line:#eaeaea;
+  --line-2:#f4f4f4;
+  --soft:#fafafa;
+  --soft-2:#f5f5f5;
+  --green:#16a34a;
+  --green-bg:#f0fdf4;
+  --amber:#d97706;
+  --amber-bg:#fffbeb;
+  --blue:#2563eb;
+  --blue-bg:#eff6ff;
+  --purple:#9333ea;
+  --purple-bg:#faf5ff;
+  --red:#dc2626;
+  --red-bg:#fef2f2;
+  --shadow-xs:0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-md:0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.03);
+  --shadow-lg:0 24px 64px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.5;letter-spacing:-0.011em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font-family:inherit}
+
+.shell{max-width:1200px;margin:0 auto;padding:0 32px}
+@media (max-width:640px){.shell{padding:0 20px}}
+
+/* HEADER */
+header{border-bottom:1px solid var(--line);background:rgba(255,255,255,0.85);position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-0.025em}
+.logo-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#0a0a0a 0%,#262626 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;box-shadow:var(--shadow-xs)}
+.nav-links{display:flex;gap:32px;font-size:14px;color:var(--ink-2);font-weight:500}
+.nav-links a{transition:color .15s ease}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);font-weight:500;padding:6px 10px;background:var(--soft);border:1px solid var(--line);border-radius:99px}
+.nav-cta::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,0.18);animation:pulse 2s ease-in-out infinite}
+@media (max-width:780px){.nav-links{display:none}}
+
+/* HERO */
+.hero{position:relative;padding:80px 0 32px;overflow:hidden}
+.hero::before{content:"";position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:1100px;height:600px;background:radial-gradient(ellipse at center,rgba(0,0,0,0.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+.hero .shell{position:relative;z-index:1;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);font-weight:500;background:var(--soft);border:1px solid var(--line);padding:6px 12px;border-radius:99px;margin-bottom:28px;box-shadow:var(--shadow-xs)}
+.hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--ink);display:inline-block}
+.hero h1{font-size:clamp(38px,5.5vw,62px);line-height:1.04;letter-spacing:-0.04em;font-weight:700;margin:0 auto 24px;max-width:780px}
+.hero h1 em{font-style:normal;font-weight:600;background:linear-gradient(180deg,var(--ink-3) 0%,var(--ink-4) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:17px;color:var(--ink-2);max-width:560px;margin:0 auto;line-height:1.55}
+
+/* TRACK FORM */
+.track-section{padding:48px 0 96px;position:relative}
+.track-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:40px;max-width:560px;margin:0 auto;box-shadow:var(--shadow-md)}
+.track-card-head{margin-bottom:32px;text-align:center}
+.track-card h2{font-size:24px;font-weight:700;margin-bottom:8px;letter-spacing:-0.025em}
+.track-card .sub{font-size:14px;color:var(--ink-3)}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:8px;letter-spacing:-0.005em}
+.field input{width:100%;border:1px solid var(--line);border-radius:11px;padding:13px 15px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink);transition:all .15s ease;letter-spacing:-0.005em}
+.field input:hover{border-color:#d4d4d4}
+.field input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 4px rgba(0,0,0,0.05)}
+.field input::placeholder{color:var(--ink-4)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:520px){.row{grid-template-columns:1fr}}
+.btn{width:100%;background:var(--ink);color:#fff;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s ease;margin-top:20px;letter-spacing:-0.01em;box-shadow:0 1px 2px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(255,255,255,0.08)}
+.btn:hover{background:#1a1a1a;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15), inset 0 -1px 0 rgba(255,255,255,0.08)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{background:var(--ink-4);cursor:not-allowed;transform:none;box-shadow:none}
+.btn .arrow{transition:transform .15s ease;display:inline-block}
+.btn:hover .arrow{transform:translateX(3px)}
+.error-msg{background:var(--red-bg);border:1px solid #fecaca;color:#991b1b;padding:12px 14px;border-radius:9px;font-size:13px;margin-top:14px;display:none;font-weight:500}
+.error-msg.visible{display:block}
+.form-footer{margin-top:20px;padding-top:20px;border-top:1px solid var(--line-2);text-align:center;font-size:12px;color:var(--ink-3);display:flex;align-items:center;justify-content:center;gap:6px}
+.form-footer svg{width:13px;height:13px;flex-shrink:0}
+
+/* TRUST STRIP */
+.trust{padding:64px 0;border-top:1px solid var(--line);background:var(--soft)}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;max-width:960px;margin:0 auto;text-align:center}
+@media (max-width:720px){.trust-grid{grid-template-columns:repeat(2,1fr);gap:24px}}
+.trust-num{font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-0.03em;margin-bottom:4px}
+.trust-label{font-size:13px;color:var(--ink-3);font-weight:500}
+
+/* FAQ SECTION */
+.faq-section{padding:96px 0;border-top:1px solid var(--line)}
+.faq-head{text-align:center;margin-bottom:48px}
+.faq-eyebrow{display:inline-block;font-size:12px;font-weight:600;color:var(--ink-3);margin-bottom:16px;letter-spacing:0.04em;text-transform:uppercase}
+.faq-head h2{font-size:clamp(28px,3.5vw,40px);font-weight:700;letter-spacing:-0.035em;line-height:1.1;margin-bottom:14px;max-width:640px;margin-left:auto;margin-right:auto}
+.faq-head p{font-size:16px;color:var(--ink-3);max-width:520px;margin:0 auto;line-height:1.6}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:1000px;margin:0 auto}
+@media (max-width:840px){.faq-grid{grid-template-columns:1fr}}
+.faq-categories{display:flex;flex-direction:column;gap:8px;background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:16px}
+.faq-cat{background:transparent;border:none;text-align:left;padding:14px 16px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:var(--ink-2);transition:all .15s ease;display:flex;align-items:center;gap:12px;letter-spacing:-0.005em}
+.faq-cat:hover{background:#fff;color:var(--ink)}
+.faq-cat.active{background:#fff;color:var(--ink);font-weight:600;box-shadow:var(--shadow-xs)}
+.faq-cat-icon{width:32px;height:32px;border-radius:8px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink-2);transition:all .15s ease}
+.faq-cat.active .faq-cat-icon{color:var(--ink)}
+.faq-cat-icon svg{width:16px;height:16px}
+.faq-answer-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;min-height:280px;box-shadow:var(--shadow-xs)}
+.faq-answer-card h3{font-size:18px;font-weight:700;margin-bottom:14px;letter-spacing:-0.02em;line-height:1.3}
+.faq-answer-card .answer{font-size:14px;color:var(--ink-2);line-height:1.7}
+.faq-answer-card .answer p{margin-bottom:12px}
+.faq-answer-card .answer p:last-child{margin-bottom:0}
+.faq-answer-card .answer ul{margin:8px 0 12px;padding-left:18px}
+.faq-answer-card .answer ul li{margin-bottom:6px}
+.faq-answer-card .answer strong{color:var(--ink);font-weight:600}
+.faq-cta{margin-top:20px;padding-top:20px;border-top:1px solid var(--line-2);font-size:13px;color:var(--ink-3)}
+.faq-cta a{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;transition:text-decoration-color .15s}
+.faq-cta a:hover{text-decoration-color:var(--ink)}
+
+/* INFO STRIP */
+.info-strip{padding:80px 0;border-top:1px solid var(--line);background:var(--soft)}
+.info-strip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1080px;margin:0 auto}
+@media (max-width:880px){.info-strip-grid{grid-template-columns:1fr}}
+.info-card{background:#fff;border:1px solid var(--line);padding:28px;border-radius:14px;transition:all .2s ease;box-shadow:var(--shadow-xs)}
+.info-card:hover{border-color:#d4d4d4;box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.info-card-icon{width:40px;height:40px;border-radius:10px;background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:var(--ink)}
+.info-card-icon svg{width:20px;height:20px}
+.info-card h4{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-0.018em}
+.info-card p{font-size:14px;color:var(--ink-3);line-height:1.6}
+
+/* FOOTER */
+footer{padding:48px 0 40px;border-top:1px solid var(--line);background:#fff}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;font-size:13px;color:var(--ink-3);align-items:center}
+.foot-left{display:flex;align-items:center;gap:14px}
+.foot-links{display:flex;gap:24px;flex-wrap:wrap}
+.foot-links a:hover{color:var(--ink)}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(10,10,10,0.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:40px 20px;overflow-y:auto;animation:fadeIn .25s ease}
+.modal.visible{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-content{background:#fff;border-radius:20px;max-width:640px;width:100%;overflow:hidden;animation:slideUp .35s cubic-bezier(.2,.8,.2,1);box-shadow:var(--shadow-lg)}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-head{padding:24px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-size:17px;font-weight:700;letter-spacing:-0.02em}
+.close{background:var(--soft);border:1px solid var(--line);font-size:18px;cursor:pointer;color:var(--ink-2);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1}
+.close:hover{background:var(--soft-2);color:var(--ink)}
+.modal-body{padding:28px}
+
+/* STATUS BANNER */
+.status-banner{padding:20px 22px;border-radius:14px;margin-bottom:20px;border:1px solid}
+.status-banner.preparing{background:var(--blue-bg);border-color:#bfdbfe}
+.status-banner.shipped{background:var(--purple-bg);border-color:#e9d5ff}
+.status-banner.intransit{background:var(--amber-bg);border-color:#fde7a8}
+.status-banner.delivery{background:#fef3c7;border-color:#fcd34d}
+.status-banner.delivered{background:var(--green-bg);border-color:#bbf7d0}
+
+.status-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.status-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.status-dot.preparing{background:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,0.2)}
+.status-dot.shipped{background:var(--purple);box-shadow:0 0 0 4px rgba(147,51,234,0.2)}
+.status-dot.intransit{background:var(--amber);box-shadow:0 0 0 4px rgba(217,119,6,0.2)}
+.status-dot.delivery{background:var(--amber);box-shadow:0 0 0 4px rgba(217,119,6,0.25);animation:pulse 1.5s ease-in-out infinite}
+.status-dot.delivered{background:var(--green);box-shadow:0 0 0 4px rgba(22,163,74,0.2)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.55}}
+.status-title{font-size:15px;font-weight:600;letter-spacing:-0.015em}
+.status-text{font-size:14px;color:var(--ink-2);margin-left:21px;margin-bottom:8px;line-height:1.5}
+.status-eta{font-size:13px;color:var(--ink-2);margin-left:21px;font-weight:600}
+
+/* PROGRESS BAR */
+.progress-wrap{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px}
+.progress-title{font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:18px;letter-spacing:0.04em;text-transform:uppercase}
+.progress-track{position:relative;display:flex;justify-content:space-between;margin-bottom:12px}
+.progress-track::before{content:"";position:absolute;top:14px;left:14px;right:14px;height:2px;background:var(--line);z-index:0}
+.progress-fill{position:absolute;top:14px;left:14px;height:2px;background:var(--ink);z-index:1;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.progress-step{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;flex:1;text-align:center}
+.progress-circle{width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;margin-bottom:10px;transition:all .3s ease;font-size:11px;color:var(--ink-3);font-weight:600}
+.progress-step.done .progress-circle{background:var(--ink);border-color:var(--ink);color:#fff}
+.progress-step.current .progress-circle{background:#fff;border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 4px rgba(0,0,0,0.08)}
+.progress-step.current .progress-circle::after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.progress-label{font-size:11px;color:var(--ink-3);font-weight:500;line-height:1.3;max-width:80px;letter-spacing:-0.005em}
+.progress-step.done .progress-label,.progress-step.current .progress-label{color:var(--ink);font-weight:600}
+@media (max-width:520px){.progress-label{font-size:10px;max-width:60px}}
+
+/* INFO GRID */
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;margin-bottom:20px;overflow:hidden}
+@media (max-width:520px){.info-grid{grid-template-columns:1fr}}
+.info-cell{background:#fff;padding:16px 18px}
+.info-label{font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:6px;letter-spacing:0.02em;text-transform:uppercase}
+.info-value{font-size:14px;color:var(--ink);font-weight:600;word-break:break-word;letter-spacing:-0.01em}
+.info-value.muted{color:var(--ink-3);font-weight:500;font-style:italic}
+
+/* HELP BOX */
+.help-box{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+.help-box svg{width:18px;height:18px;flex-shrink:0;color:var(--ink-2);margin-top:1px}
+.help-box-content{font-size:13px;color:var(--ink-2);line-height:1.5}
+.help-box-content strong{color:var(--ink);font-weight:600}
+.help-box-content a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--ink-4);text-underline-offset:2px}
+
+/* DELIVERY CALENDAR */
+.calendar-wrap{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px}
+.calendar-title{font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:18px;letter-spacing:0.04em;text-transform:uppercase}
+.calendar-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+.calendar-key{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+.calendar-key-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.calendar-key-dot.commande{background:var(--ink)}
+.calendar-key-dot.window{background:#fef3c7;border:1px solid #fcd34d}
+.calendar-key-dot.today{background:#fff;border:2px solid var(--ink)}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calendar-day-name{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.05em;text-align:center;padding:6px 0;font-weight:600}
+.calendar-day{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--ink-3);border-radius:8px;position:relative;border:1px solid transparent}
+.calendar-day.empty{visibility:hidden}
+.calendar-day.in-month{color:var(--ink)}
+.calendar-day.commande{background:var(--ink);color:#fff;font-weight:700}
+.calendar-day.window{background:#fef3c7;color:#92400e;border-color:#fcd34d;font-weight:600}
+.calendar-day.today{border-color:var(--ink);border-width:2px;font-weight:700}
+.calendar-day.today.window{background:#fef3c7;border-color:var(--ink)}
+.calendar-month-label{font-size:13px;font-weight:600;color:var(--ink);text-align:center;margin-bottom:10px;letter-spacing:-0.005em}
+
+/* WHAT HAPPENS NOW */
+.next-steps{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:20px}
+.next-steps-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
+.next-steps-title svg{width:16px;height:16px;color:var(--ink-2)}
+.next-steps-content{font-size:14px;color:var(--ink-2);line-height:1.65}
+.next-steps-content strong{color:var(--ink);font-weight:600}
+
+/* GUARANTEES */
+.guarantees{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:0}
+@media (max-width:520px){.guarantees{grid-template-columns:1fr}}
+.guarantee{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.guarantee-icon{width:32px;height:32px;border-radius:8px;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.guarantee-icon svg{width:16px;height:16px}
+.guarantee-label{font-size:11px;font-weight:600;color:var(--ink);letter-spacing:-0.005em;line-height:1.3}
+.guarantee-sub{font-size:10px;color:var(--ink-3);font-weight:500}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="shell nav">
+    <div class="logo">
+      <div class="logo-mark">G</div>
+      <span>Globai Track</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#track">Suivi</a>
+      <a href="#faq">Questions fréquentes</a>
+      <a href="#info">Infos livraison</a>
+    </nav>
+    <div class="nav-cta">Service en ligne</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="shell">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      <span>Suivi de commande</span>
+    </div>
+    <h1>Où en est <em>votre commande</em> aujourd'hui ?</h1>
+    <p>Saisissez vos informations pour connaître le statut de votre livraison et les prochaines étapes.</p>
+  </div>
+</section>
+
+<section class="track-section" id="track">
+  <div class="shell">
+    <div class="track-card">
+      <div class="track-card-head">
+        <h2>Localiser ma commande</h2>
+        <p class="sub">Saisissez vos informations de commande.</p>
+      </div>
+
+      <form id="trackForm" autocomplete="off">
+        <div class="field">
+          <label for="email">Adresse e-mail</label>
+          <input type="email" id="email" placeholder="vous@exemple.com" required>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="orderNum">Numéro de commande</label>
+            <input type="text" id="orderNum" placeholder="#100245" required>
+          </div>
+          <div class="field">
+            <label for="orderDate">Date de la commande</label>
+            <input type="date" id="orderDate" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">
+          <span id="btnLabel">Voir le statut de ma commande</span>
+          <span class="arrow">→</span>
+        </button>
+        <div class="error-msg" id="errorMsg"></div>
+        <div class="form-footer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Connexion sécurisée — vos données sont chiffrées</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="shell">
+    <div class="trust-grid">
+      <div>
+        <div class="trust-num">10-15j</div>
+        <div class="trust-label">Délai de livraison estimé</div>
+      </div>
+      <div>
+        <div class="trust-num">14j</div>
+        <div class="trust-label">Politique de retour</div>
+      </div>
+      <div>
+        <div class="trust-num">100%</div>
+        <div class="trust-label">Paiement sécurisé</div>
+      </div>
+      <div>
+        <div class="trust-num">24h</div>
+        <div class="trust-label">Réponse au support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section" id="faq">
+  <div class="shell">
+    <div class="faq-head">
+      <div class="faq-eyebrow">Centre d'aide</div>
+      <h2>Questions fréquentes</h2>
+      <p>Trouvez immédiatement la réponse à votre question. Sélectionnez une catégorie ci-dessous.</p>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-categories" id="faqCategories">
+        <!-- generated by JS -->
+      </div>
+      <div class="faq-answer-card" id="faqAnswer">
+        <!-- generated by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="info-strip" id="info">
+  <div class="shell">
+    <div class="info-strip-grid">
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h4>Délais de livraison</h4>
+        <p>Comptez en moyenne 10 à 15 jours ouvrés à partir de la confirmation de commande, selon votre zone de livraison.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h4>Origine des envois</h4>
+        <p>Nos produits sont expédiés depuis nos entrepôts partenaires en Europe. Un transporteur local prend le relais pour la livraison finale.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h4>Garantie satisfait</h4>
+        <p>Vous disposez de 14 jours après réception pour demander un retour. Notre équipe vous accompagne à chaque étape.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="shell foot">
+    <div class="foot-left">
+      <div class="logo">
+        <div class="logo-mark">G</div>
+        <span>Globai Track</span>
+      </div>
+      <span>© 2026 Globai Track</span>
+    </div>
+    <div class="foot-links">
+      <a href="#">Mentions légales</a>
+      <a href="#">CGV</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- TRACKING RESULT MODAL -->
+<div class="modal" id="resultModal">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h3>Statut de votre commande</h3>
+      <button class="close" id="closeModal">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   FAQ DATA — éditable facilement
+   ============================================================ */
+const FAQ_DATA = [
+  {
+    id: "delais",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    label: "Délais de livraison",
+    title: "Combien de temps prend la livraison ?",
+    answer: `<p>Le délai de livraison estimé est de <strong>10 à 15 jours ouvrés</strong> à partir de la confirmation de votre commande.</p>
+             <p>Ce délai se décompose ainsi :</p>
+             <ul>
+               <li><strong>1 à 3 jours</strong> de préparation en entrepôt</li>
+               <li><strong>7 à 12 jours</strong> de transit jusqu'à votre adresse</li>
+             </ul>
+             <p>Vous recevrez un e-mail dès que votre commande sera expédiée, avec un numéro de suivi vous permettant de la localiser en temps réel.</p>`
+  },
+  {
+    id: "ou",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+    label: "Où est mon colis ?",
+    title: "Comment savoir où en est mon colis ?",
+    answer: `<p>Pour suivre votre commande, utilisez l'outil de suivi en haut de cette page.</p>
+             <p>Munissez-vous de :</p>
+             <ul>
+               <li>Votre <strong>adresse e-mail</strong> de commande</li>
+               <li>Votre <strong>numéro de commande</strong> (commence par #)</li>
+               <li>La <strong>date</strong> de votre commande</li>
+             </ul>
+             <p>Vous y verrez le statut actuel et l'étape de livraison en cours. Si un numéro de suivi a été émis par le transporteur, il s'affichera également.</p>`
+  },
+  {
+    id: "pas-recu",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    label: "Je n'ai pas reçu mon colis",
+    title: "Mon colis dépasse les 15 jours, que faire ?",
+    answer: `<p>Si votre commande dépasse le délai de 15 jours ouvrés sans avoir été livrée, voici les étapes à suivre :</p>
+             <ul>
+               <li>Vérifiez l'<strong>état du suivi</strong> sur cette page — il indique parfois une tentative de livraison ou un point relais</li>
+               <li>Contrôlez votre <strong>boîte e-mail</strong> (et les spams) pour un éventuel avis du transporteur</li>
+               <li>Demandez à vos voisins ou au gardien si le colis a été déposé chez eux</li>
+             </ul>
+             <p>Si rien de tout cela ne donne de résultat, <strong>contactez notre support</strong> avec votre numéro de commande. Nous ouvrirons une enquête auprès du transporteur sous 48h.</p>`
+  },
+  {
+    id: "adresse",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    label: "Modifier mon adresse",
+    title: "Puis-je modifier mon adresse de livraison ?",
+    answer: `<p>La modification d'adresse est <strong>possible uniquement avant l'expédition</strong> de votre commande.</p>
+             <p>Si votre commande affiche le statut "Préparation en cours", contactez immédiatement notre support à <a href="mailto:contact@globai-track.com">contact@globai-track.com</a> avec :</p>
+             <ul>
+               <li>Votre numéro de commande</li>
+               <li>Votre nouvelle adresse complète</li>
+             </ul>
+             <p>Une fois la commande expédiée, l'adresse ne peut plus être modifiée. Dans ce cas, vous pouvez toutefois contacter directement le transporteur avec votre numéro de suivi pour faire une demande de réacheminement (selon les conditions du transporteur).</p>`
+  },
+  {
+    id: "remboursement",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    label: "Retours & remboursements",
+    title: "Comment retourner un produit et obtenir un remboursement ?",
+    answer: `<p>Vous disposez de <strong>14 jours après réception</strong> pour demander un retour, conformément à votre droit de rétractation.</p>
+             <p>Pour initier un retour :</p>
+             <ul>
+               <li>Envoyez un e-mail à <a href="mailto:contact@globai-track.com">contact@globai-track.com</a> avec votre numéro de commande</li>
+               <li>Précisez le motif du retour (produit défectueux, non conforme, simple changement d'avis…)</li>
+               <li>Notre équipe vous transmet l'adresse de retour sous 24-48h</li>
+             </ul>
+             <p>Une fois votre colis reçu et inspecté, le <strong>remboursement est effectué sous 5 à 10 jours ouvrés</strong> sur votre moyen de paiement initial.</p>`
+  },
+  {
+    id: "endommage",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+    label: "Produit endommagé",
+    title: "Mon produit est arrivé endommagé. Que faire ?",
+    answer: `<p>Nous sommes désolés pour ce désagrément. Voici la marche à suivre :</p>
+             <ul>
+               <li>Prenez <strong>plusieurs photos</strong> du produit endommagé et de l'emballage extérieur</li>
+               <li>Conservez l'emballage d'origine, il pourra être nécessaire pour l'enquête</li>
+               <li>Envoyez ces photos à <a href="mailto:contact@globai-track.com">contact@globai-track.com</a> avec votre numéro de commande sous <strong>48h après réception</strong></li>
+             </ul>
+             <p>Selon la situation, nous proposerons un remplacement gratuit ou un remboursement intégral. Le délai de traitement est de 2 à 5 jours ouvrés.</p>`
+  },
+  {
+    id: "paiement",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
+    label: "Paiement & sécurité",
+    title: "Mes données de paiement sont-elles sécurisées ?",
+    answer: `<p>Oui, absolument. Le paiement sur notre site est <strong>100% sécurisé</strong> :</p>
+             <ul>
+               <li>Toutes les transactions sont chiffrées en <strong>SSL/TLS</strong></li>
+               <li>Nous utilisons des prestataires certifiés <strong>PCI-DSS</strong> (Stripe, PayPal)</li>
+               <li>Aucune donnée bancaire n'est stockée sur nos serveurs</li>
+             </ul>
+             <p>En cas de litige, vous bénéficiez de la protection acheteur de votre moyen de paiement (PayPal, carte bancaire…).</p>`
+  },
+  {
+    id: "contact",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    label: "Contacter le support",
+    title: "Comment contacter le support ?",
+    answer: `<p>Notre équipe est à votre disposition pour toute question :</p>
+             <ul>
+               <li>Par e-mail : <a href="mailto:contact@globai-track.com">contact@globai-track.com</a></li>
+               <li>Via notre formulaire de contact en bas de page</li>
+             </ul>
+             <p>Nous répondons à <strong>toutes les demandes sous 24h ouvrées</strong> (du lundi au vendredi). Pour les commandes en cours, merci de toujours indiquer votre <strong>numéro de commande</strong> en début de message — cela nous permet de traiter votre demande beaucoup plus rapidement.</p>`
+  }
+];
+
+/* RENDER FAQ */
+const faqCategories = document.getElementById('faqCategories');
+const faqAnswer = document.getElementById('faqAnswer');
+
+function renderFaq(activeId){
+  faqCategories.innerHTML = FAQ_DATA.map(item => `
+    <button class="faq-cat ${item.id === activeId ? 'active' : ''}" data-id="${item.id}">
+      <div class="faq-cat-icon">${item.icon}</div>
+      <span>${item.label}</span>
+    </button>
+  `).join('');
+
+  const active = FAQ_DATA.find(i => i.id === activeId);
+  faqAnswer.innerHTML = `
+    <h3>${active.title}</h3>
+    <div class="answer">${active.answer}</div>
+    <div class="faq-cta">
+      Vous n'avez pas trouvé votre réponse ? <a href="mailto:contact@globai-track.com">Contactez notre support</a>
+    </div>
+  `;
+
+  document.querySelectorAll('.faq-cat').forEach(btn => {
+    btn.addEventListener('click', () => renderFaq(btn.dataset.id));
+  });
+}
+renderFaq(FAQ_DATA[0].id);
+
+/* ============================================================
+   ORDER STATUS LOGIC — honest version
+   No fake tracking number, no fake carrier, no invented locations
+   Just an honest progress bar based on order date
+   ============================================================ */
+
+const STAGES = [
+  { key:"preparing", label:"Commande reçue", short:"Reçue" },
+  { key:"shipped",   label:"Expédiée",       short:"Expédiée" },
+  { key:"intransit", label:"En transit",     short:"Transit" },
+  { key:"delivery",  label:"En livraison",   short:"Livraison" },
+  { key:"delivered", label:"Livrée",         short:"Livrée" }
+];
+
+function pad(n){return String(n).padStart(2,'0')}
+function fmtDate(d){return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+
+function computeOrderState(orderDate){
+  const now = new Date();
+  const daysSince = Math.floor((now - orderDate) / (1000*60*60*24));
+
+  if (daysSince < 0) {
+    return { error: "La date de commande est dans le futur. Veuillez vérifier vos informations." };
+  }
+
+  // Honest timing : 1-3j prep, 7-12j transit, livraison entre J+10 et J+15
+  const etaMin = addDays(orderDate, 10);
+  const etaMax = addDays(orderDate, 15);
+
+  let stageIndex, statusKey, statusLabel, statusText, etaText, nextSteps;
+
+  if (daysSince <= 1) {
+    stageIndex = 0;
+    statusKey = "preparing";
+    statusLabel = "Commande reçue — préparation en cours";
+    statusText = "Votre commande a bien été enregistrée et est en cours de préparation dans notre entrepôt. Nos équipes vérifient les articles, les emballent avec soin et préparent l'étiquette d'expédition.";
+    etaText = `Expédition prévue sous 1 à 3 jours • livraison estimée entre le ${fmtDate(etaMin)} et le ${fmtDate(etaMax)}`;
+    nextSteps = `<strong>Prochaines étapes :</strong> dès que votre colis quittera notre entrepôt, vous recevrez un <strong>e-mail de confirmation d'expédition</strong> avec le numéro de suivi du transporteur. Vous pourrez alors suivre votre colis en temps réel jusqu'à votre porte.`;
+  } else if (daysSince <= 3) {
+    stageIndex = 1;
+    statusKey = "shipped";
+    statusLabel = "Commande expédiée";
+    statusText = "Votre commande a été préparée et confiée au transporteur. Elle est en route pour son centre de tri international.";
+    etaText = `Livraison estimée entre le ${fmtDate(etaMin)} et le ${fmtDate(etaMax)}`;
+    nextSteps = `<strong>Prochaines étapes :</strong> votre colis va effectuer son <strong>transit international</strong> (en général 5 à 8 jours). Le numéro de suivi vous sera communiqué <strong>par e-mail dès qu'il sera émis par le transporteur</strong> — pensez à vérifier votre boîte (et vos spams).`;
+  } else if (daysSince <= 9) {
+    stageIndex = 2;
+    statusKey = "intransit";
+    statusLabel = "En transit vers votre adresse";
+    statusText = "Votre colis est actuellement en transit international. Il voyage entre notre entrepôt d'expédition et le centre de distribution local le plus proche de chez vous.";
+    etaText = `Livraison estimée entre le ${fmtDate(etaMin)} et le ${fmtDate(etaMax)}`;
+    nextSteps = `<strong>Prochaines étapes :</strong> une fois arrivé dans votre pays, votre colis sera remis à un <strong>transporteur local</strong> qui se chargera de la livraison finale. Vous serez alors notifié par e-mail avec un lien pour suivre la livraison en direct.`;
+  } else if (daysSince <= 14) {
+    stageIndex = 3;
+    statusKey = "delivery";
+    statusLabel = "Bientôt en livraison";
+    statusText = "Votre colis approche de votre zone de livraison. Le transporteur local s'apprête à le prendre en charge pour vous le remettre en main propre.";
+    etaText = `Livraison imminente • dernière estimation : ${fmtDate(etaMax)}`;
+    nextSteps = `<strong>Prochaines étapes :</strong> le transporteur vous contactera prochainement (e-mail ou SMS) pour vous indiquer le <strong>jour et le créneau de livraison</strong>. Pensez à être disponible ou à indiquer un point de retrait alternatif si nécessaire.`;
+  } else {
+    stageIndex = 3;
+    statusKey = "delivery";
+    statusLabel = "Livraison en cours";
+    statusText = "Votre commande dépasse légèrement le délai estimé. Il arrive que certains colis prennent quelques jours supplémentaires en raison du transit douanier ou de pics d'activité chez le transporteur.";
+    etaText = `Délai initial : ${fmtDate(etaMin)} – ${fmtDate(etaMax)}`;
+    nextSteps = `<strong>Que faire ?</strong> Si vous n'avez toujours rien reçu dans les <strong>48 prochaines heures</strong>, contactez notre support à <strong>contact@globai-track.com</strong> en précisant votre numéro de commande. Nous ouvrirons immédiatement une enquête auprès du transporteur.`;
+  }
+
+  return { stageIndex, statusKey, statusLabel, statusText, etaText, etaMin, etaMax, nextSteps, orderDate };
+}
+
+function renderProgress(stageIndex){
+  const fillPercent = stageIndex === 0 ? 0 : (stageIndex / (STAGES.length - 1)) * 100;
+  let html = `
+    <div class="progress-wrap">
+      <div class="progress-title">Progression de la commande</div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:calc(${fillPercent}% - ${fillPercent === 0 ? 0 : 14}px)"></div>
+  `;
+  STAGES.forEach((s, idx) => {
+    let cls = 'upcoming';
+    if (idx < stageIndex) cls = 'done';
+    else if (idx === stageIndex) cls = 'current';
+    html += `
+      <div class="progress-step ${cls}">
+        <div class="progress-circle">${idx < stageIndex ? '✓' : idx + 1}</div>
+        <div class="progress-label">${s.short}</div>
+      </div>
+    `;
+  });
+  html += `</div></div>`;
+  return html;
+}
+
+function sameDay(a, b){
+  return a.getDate() === b.getDate() && a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
+}
+
+function renderCalendar(orderDate, etaMin, etaMax){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  // Determine which month to show (the one containing the delivery window center)
+  const center = new Date((etaMin.getTime() + etaMax.getTime()) / 2);
+  const year = center.getFullYear();
+  const month = center.getMonth();
+
+  const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+  const dayNames = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  // Monday-based weekday (0 = Monday)
+  let startWeekday = firstDay.getDay() - 1;
+  if (startWeekday < 0) startWeekday = 6;
+
+  let html = `
+    <div class="calendar-wrap">
+      <div class="calendar-title">Fenêtre de livraison estimée</div>
+      <div class="calendar-summary">
+        <div class="calendar-key"><span class="calendar-key-dot commande"></span> Commande passée</div>
+        <div class="calendar-key"><span class="calendar-key-dot window"></span> Livraison estimée</div>
+        <div class="calendar-key"><span class="calendar-key-dot today"></span> Aujourd'hui</div>
+      </div>
+      <div class="calendar-month-label">${monthNames[month]} ${year}</div>
+      <div class="calendar-grid">
+  `;
+
+  dayNames.forEach(name => {
+    html += `<div class="calendar-day-name">${name}</div>`;
+  });
+
+  for (let i = 0; i < startWeekday; i++) {
+    html += `<div class="calendar-day empty"></div>`;
+  }
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const day = new Date(year, month, d);
+    day.setHours(0,0,0,0);
+
+    let classes = ['calendar-day', 'in-month'];
+    const orderDay = new Date(orderDate); orderDay.setHours(0,0,0,0);
+    const etaMinDay = new Date(etaMin); etaMinDay.setHours(0,0,0,0);
+    const etaMaxDay = new Date(etaMax); etaMaxDay.setHours(0,0,0,0);
+
+    if (sameDay(day, orderDay)) classes.push('commande');
+    else if (day >= etaMinDay && day <= etaMaxDay) classes.push('window');
+    if (sameDay(day, today)) classes.push('today');
+
+    html += `<div class="${classes.join(' ')}">${d}</div>`;
+  }
+
+  html += `</div></div>`;
+  return html;
+}
+
+function renderGuarantees(){
+  return `
+    <div class="guarantees">
+      <div class="guarantee">
+        <div class="guarantee-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="guarantee-label">Paiement sécurisé</div>
+        <div class="guarantee-sub">SSL · PCI-DSS</div>
+      </div>
+      <div class="guarantee">
+        <div class="guarantee-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="guarantee-label">Garantie 14 jours</div>
+        <div class="guarantee-sub">Satisfait ou remboursé</div>
+      </div>
+      <div class="guarantee">
+        <div class="guarantee-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="guarantee-label">Support sous 24h</div>
+        <div class="guarantee-sub">Réponse garantie</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderOrderStatus(email, orderNum, orderDateStr){
+  const orderDate = new Date(orderDateStr);
+  orderDate.setHours(9, 0, 0, 0);
+  const state = computeOrderState(orderDate);
+
+  if (state.error) return { error: state.error };
+
+  const cleanOrderNum = orderNum.startsWith("#") ? orderNum : "#" + orderNum;
+
+  const html = `
+    <div class="status-banner ${state.statusKey}">
+      <div class="status-row">
+        <div class="status-dot ${state.statusKey}"></div>
+        <div class="status-title">${state.statusLabel}</div>
+      </div>
+      <div class="status-text">${state.statusText}</div>
+      <div class="status-eta">${state.etaText}</div>
+    </div>
+
+    ${renderProgress(state.stageIndex)}
+
+    ${renderCalendar(orderDate, state.etaMin, state.etaMax)}
+
+    <div class="next-steps">
+      <div class="next-steps-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Que se passe-t-il maintenant ?
+      </div>
+      <div class="next-steps-content">${state.nextSteps}</div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-cell">
+        <div class="info-label">N° de commande</div>
+        <div class="info-value">${cleanOrderNum}</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">Date de commande</div>
+        <div class="info-value">${fmtDate(orderDate)}</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">E-mail associé</div>
+        <div class="info-value">${email}</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">Livraison estimée</div>
+        <div class="info-value">${fmtDate(state.etaMin)} – ${fmtDate(state.etaMax)}</div>
+      </div>
+    </div>
+
+    ${renderGuarantees()}
+
+    <div class="help-box" style="margin-top:20px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div class="help-box-content">
+        <strong>Une question ?</strong> Consultez notre <a href="#faq">FAQ</a> ou écrivez-nous à <a href="mailto:contact@globai-track.com">contact@globai-track.com</a> en précisant votre numéro de commande.
+      </div>
+    </div>
+  `;
+
+  return { html };
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+const form = document.getElementById('trackForm');
+const modal = document.getElementById('resultModal');
+const modalBody = document.getElementById('modalBody');
+const closeBtn = document.getElementById('closeModal');
+const errorMsg = document.getElementById('errorMsg');
+const btnLabel = document.getElementById('btnLabel');
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  errorMsg.classList.remove('visible');
+
+  const email = document.getElementById('email').value.trim();
+  const orderNum = document.getElementById('orderNum').value.trim();
+  const orderDate = document.getElementById('orderDate').value;
+
+  if (!email || !orderNum || !orderDate) {
+    errorMsg.textContent = "Veuillez compléter tous les champs.";
+    errorMsg.classList.add('visible');
+    return;
+  }
+
+  const btn = form.querySelector('.btn');
+  const originalLabel = btnLabel.textContent;
+  btnLabel.textContent = "Recherche...";
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const result = renderOrderStatus(email, orderNum, orderDate);
+    btnLabel.textContent = originalLabel;
+    btn.disabled = false;
+
+    if (result.error) {
+      errorMsg.textContent = result.error;
+      errorMsg.classList.add('visible');
+      return;
+    }
+
+    modalBody.innerHTML = result.html;
+    modal.classList.add('visible');
+  }, 600);
+});
+
+closeBtn.addEventListener('click', () => modal.classList.remove('visible'));
+modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('visible'); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('visible'); });
+
+const dateInput = document.getElementById('orderDate');
+const fourDaysAgo = new Date();
+fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
+dateInput.value = fourDaysAgo.toISOString().split('T')[0];
+dateInput.max = new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>
